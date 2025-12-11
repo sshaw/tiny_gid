@@ -17,7 +17,7 @@ module TinyGID
       raise TypeError, "gid::#{name} params must be a Hash. Received: #{params.class}" unless params.is_a?(Hash)
 
       app = params.delete(:__app__) || TinyGID.app
-      raise "gid::#{name} cannot be generated: missing app" unless app
+      raise "gid::#{name} cannot be generated: missing app name" unless app
 
       gid = sprintf(FORMAT, app, name, URI.encode_www_form_component(id))
       return gid unless params.any?
@@ -37,7 +37,7 @@ module TinyGID
 
     def app(name = nil)
       if block_given?
-        raise ArgumentError, "block provided without a app to scope to" unless name
+        raise ArgumentError, "block provided without an app name to scope to" unless name
 
         begin
           og = @app
