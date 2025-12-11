@@ -29,11 +29,18 @@ RSpec.describe TinyGID do
     expect(TinyGID.User(1)).to eq("gid://shopify/User/1")
   end
 
-  it "supports extra query parameters on certain resource types" do
+  it "adds query string parameters" do
     TinyGID.app = "shopify"
 
-    gid = TinyGID::InventoryItem(123, :item_id => 456)
-    expect(gid).to eq("gid://shopify/InventoryItem/123?item_id=456")
+    gid = TinyGID::InventoryItem(123, :item_id => 456, :whatever => "A B")
+    expect(gid).to eq("gid://shopify/InventoryItem/123?item_id=456&whatever=A+B")
+  end
+
+  it "encodes the ID value using the x-www-form-urlencoded content type" do
+    TinyGID.app = "foo"
+
+    gid = TinyGID::User("A B")
+    expect(gid).to eq("gid://foo/User/A+B")
   end
 
   it "restores the previous app value even when an exception is raised inside the block" do
