@@ -1,8 +1,8 @@
 # TinyGID
 
-![GID CI Status](https://github.com/sshaw/tiny_gid/actions/workflows/ci.yml/badge.svg "TinyGID CI Status")
+![TinyGID CI Status](https://github.com/sshaw/tiny_gid/actions/workflows/ci.yml/badge.svg "TinyGID CI Status")
 
-Tiny class to build Global ID (GID) strings from a scalar value.
+Tiny class to build Global ID (gid://) strings from scalar values.
 
 ## Usage
 
@@ -27,11 +27,8 @@ gid.app("something-amaaaazing") do
 end
 ```
 
-If you don't want the (pesky?) `gid` method and prefer instances:
-
+This will also import the `GID` class:
 ```rb
-require "tiny_gid/gid"
-
 gid = GID.new("shopify")
 gid::Product(123)        # "gid://shopify/Product/123"
 
@@ -39,8 +36,9 @@ gid::Product(123)        # "gid://shopify/Product/123"
 gid.Product(123) # "gid://shopify/Product/123"
 ```
 
-If you don't want to import `GID` into the top-level namespace use `TinyGID`:
+If you don't want the (pesky?) `gid` method you can require: `tiny_gid/gid` which gives you `GID` only.
 
+If `GID` creates a conflict in the top-level namespace use `TinyGID`:
 ```rb
 require "tiny_gid"
 
@@ -57,10 +55,11 @@ gid.Product(123)
 
 ## Why Not Use GlobalID‽
 
-[GlobalID](https://github.com/rails/globalid) is nice but it primarily deals with IDs backed by an instance of a class, e.g. Rails model, whereas the GID library is for scalars.
-GlobalID does indeed have version that can be used with scalars but it's a bit verbose and not good for developer productivity.
+[GlobalID](https://github.com/rails/globalid) is nice but it primarily deals with IDs backed by an instance of a class, e.g. Rails model, whereas
+TinyGID is for scalars.
 
-```
+GlobalID does indeed have version that can be used with scalars but it's a bit verbose and not good for developer productivity:
+```rb
 URI::GID.build(:app => "foo", :model_name => "User", :model_id => "123", :params => { :foo => "bar" })
 ```
 

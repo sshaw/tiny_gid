@@ -9,11 +9,9 @@ Gem::Specification.new do |spec|
   spec.email = ["skye.shaw@gmail.com"]
 
   spec.description = "TinyGID provides a compact syntax for building Global ID strings for things like GraphQL APIs and Rails apps"
-  spec.summary = "Tiny class to build Global ID (GID) strings from a scalar value"
+  spec.summary = "Tiny class to build Global ID (gid://) strings from scalar values"
   spec.homepage = "https://github.com/sshaw/tiny_gid"
   spec.license = "MIT"
-
-  spec.metadata["allowed_push_host"] = ""
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/sshaw/tiny_gid"
