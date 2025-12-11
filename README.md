@@ -69,7 +69,7 @@ Don't yah think?
 
 Using application/x-www-form-urlencoded encoding to match GlobalID. Should probably support URL encoding too.
 
-To put that in 21st century speak: spaces with be replaced with `+` not `%20`.
+To put that in 21st century speak: spaces will be replaced with `+` not `%20`.
 
 ## Signed Global IDs
 
