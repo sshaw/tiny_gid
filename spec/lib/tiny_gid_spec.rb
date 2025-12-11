@@ -29,6 +29,32 @@ RSpec.describe TinyGID do
     expect(TinyGID.User(1)).to eq("gid://shopify/User/1")
   end
 
+  it "is thread-safe when called in the block form" do
+    TinyGID.app = "main"
+
+    threads = 10.times.map do |i|
+      Thread.new do
+        TinyGID.app("thread-#{i}") do
+          expect(TinyGID.app).to eq("thread-#{i}")
+          expect(TinyGID.Product(123).to_s).to eq("gid://thread-#{i}/Product/123")
+
+          # Force some contention
+          sleep(rand(0.001..0.005))
+        end
+
+        # Check that outside the thread it's "main"
+        TinyGID.app
+      end
+    end
+
+    # Main thread never changed
+    expect(TinyGID.app).to eq("main")
+    expect(TinyGID.Product(1)).to eq("gid://main/Product/1")
+
+    values = threads.map(&:value)
+    expect(values).to eq %w[main] * 10
+  end
+
   it "adds query string parameters" do
     TinyGID.app = "shopify"
 

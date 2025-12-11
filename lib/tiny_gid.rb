@@ -3,7 +3,7 @@
 require "uri"
 
 module TinyGID
-  VERSION = "0.0.1"
+  VERSION = "0.0.2"
   FORMAT = "gid://%s/%s/%s"
 
   module MethodMissing  # :nodoc:
@@ -40,12 +40,10 @@ module TinyGID
         raise ArgumentError, "block provided without an app name to scope to" unless name
 
         begin
-          og = @app
-          @app = name
-
+          Thread.current[:__tiny_gid_app__] = name
           yield self
         ensure
-          @app = og
+          Thread.current[:__tiny_gid_app__] = nil
         end
 
         return
@@ -54,8 +52,14 @@ module TinyGID
       # No block but given a name, just set it :|
       @app = name if name
 
-      return @app if @app
-      return Rails.application.name if defined?(Rails) && Rails.respond_to?(:application)
+      case
+      when Thread.current[:__tiny_gid_app__]
+        Thread.current[:__tiny_gid_app__]
+      when @app
+        @app
+      when defined?(Rails) && Rails.respond_to?(:application)
+        Rails.application.name
+      end
     end
 
     # Necessary?
