@@ -36,7 +36,7 @@ RSpec.describe TinyGID do
       Thread.new do
         TinyGID.app("thread-#{i}") do
           expect(TinyGID.app).to eq("thread-#{i}")
-          expect(TinyGID.Product(123).to_s).to eq("gid://thread-#{i}/Product/123")
+          expect(TinyGID.Product(123)).to eq("gid://thread-#{i}/Product/123")
 
           # Force some contention
           sleep(rand(0.001..0.005))
