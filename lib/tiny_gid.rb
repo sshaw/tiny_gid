@@ -3,8 +3,9 @@
 require "uri"
 
 module TinyGID
-  VERSION = "0.0.2"
+  VERSION = "0.0.3"
   FORMAT = "gid://%s/%s/%s"
+  REGEX = %r{\Agid://([^/]+)/([^/]+)/([^/?]+)(?:\?(.*?))?\z}
 
   module MethodMissing  # :nodoc:
     def method_missing(name, *arguments, &block)
@@ -62,12 +63,17 @@ module TinyGID
       end
     end
 
-    # Necessary?
-    # def to_sc(gid)
-    #   # TODO:
-    #   # value, params = TinyGID.to_sc("gid://shopify/Product/123?is_a=headache")
-    #   gid.to_s.split("/")[-1]
-    # end
+    def parse(gid)
+      raise ArgumentError, "'#{gid}' is not a valid global id" unless gid =~ REGEX
+
+      parsed = [$1, $2, $3]
+      parsed << Hash[URI.decode_www_form($4)] if $4 && !$4.empty?
+      parsed
+    end
+
+    def to_sc(gid)
+      parse(gid)[2]
+    end
   end
 
   def initialize(app)

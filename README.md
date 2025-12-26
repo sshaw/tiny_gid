@@ -53,6 +53,22 @@ gid = TinyGID.new("shopify")
 gid.Product(123)
 ```
 
+### Parsing
+
+```rb
+app, model, id = gid.parse("gid://shopify/Product/123")
+app, model, id, params = gid.parse("gid://shopify/Product/123?foo=bar")
+```
+
+`params` is a `Hash`
+
+If you just want the scalar ID:
+
+```rb
+id = gid.to_sc("gid://shopify/Product/123") # "123"
+id = gid.to_sc("gid://shopify/Product/123?foo=bar") # "123"
+```
+
 ## Why Not Use GlobalID‽
 
 [GlobalID](https://github.com/rails/globalid) is nice but it primarily deals with IDs backed by an instance of a class, e.g. Rails model, whereas
