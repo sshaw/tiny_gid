@@ -10,6 +10,16 @@ RSpec.describe TinyGID do
   #   expect(defined?(gid)).to be_nil
   # end
 
+  it "generates a global ID based on the given app name and model" do
+    tiny = described_class.new("shopify")
+    expect(tiny::Foo(123)).to eq "gid://shopify/Foo/123"
+  end
+
+  it "generates a global ID based on the given app name, model, and parameters" do
+    tiny = described_class.new("shopify")
+    expect(tiny::Foo(123, :x => 123, :y => 456)).to eq "gid://shopify/Foo/123?x=123&y=456"
+  end
+
   describe ".gid" do
     it "uses the globally configured app name by default" do
       described_class.app = "shopify"
