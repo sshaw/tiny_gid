@@ -1,4 +1,5 @@
 require "tiny_gid"
+require "ostruct"
 
 RSpec.describe TinyGID do
   it "does not define GID" do
@@ -119,6 +120,28 @@ RSpec.describe TinyGID do
 
       parsed = described_class.parse("gid://foo/User/123?")
       expect(parsed).to eq ["foo", "User", "123"]
+    end
+  end
+
+  describe ".app" do
+    before do
+      described_class.app = nil
+    end
+
+    context "when Rails is defined but its application does not respond to name" do
+      it "returns nil" do
+        stub_const("Rails", OpenStruct.new(:application => Object.new))
+
+        expect(described_class.app).to be_nil
+      end
+    end
+
+    context "when Rails is defined and its application responds to name" do
+      it "returns the application name" do
+        stub_const("Rails", OpenStruct.new(:application => OpenStruct.new(:name => "my-app")))
+
+        expect(described_class.app).to eq("my-app")
+      end
     end
   end
 

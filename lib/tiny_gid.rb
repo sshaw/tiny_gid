@@ -58,7 +58,7 @@ class TinyGID
         Thread.current[:__tiny_gid_app__]
       when @app
         @app
-      when defined?(Rails) && Rails.respond_to?(:application)
+      when defined?(Rails) && Rails.respond_to?(:application) && Rails.application.respond_to?(:name)
         Rails.application.name
       end
     end
