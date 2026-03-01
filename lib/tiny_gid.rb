@@ -3,7 +3,7 @@
 require "uri"
 
 class TinyGID
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
   FORMAT = "gid://%s/%s/%s"
   REGEX = %r{\Agid://([^/]+)/([^/]+)/([^/?]+)(?:\?(.*?))?\z}
 
