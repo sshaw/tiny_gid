@@ -1,6 +1,46 @@
 require "tiny_gid"
 require "ostruct"
 
+RSpec.shared_examples "parsing a global id" do
+  before { subject.app = "foo" }
+
+  %w[gid gid:// gid://foo/Bar gid//foo gid://foo/Bar/ gid//foo/Bar/123].each do |id|
+    context "given #{id}" do
+      it "raises an ArgumentError" do
+        expect { subject.parse(id) }.to raise_error(ArgumentError, "'#{id}' is not a valid global id")
+      end
+    end
+  end
+
+  it "parses a valid global id" do
+    parsed = subject.parse("gid://foo/User/123")
+    expect(parsed).to eq %w[foo User 123]
+
+    parsed = subject.parse("gid://foo/SomeUser/123-456")
+    expect(parsed).to eq %w[foo SomeUser 123-456]
+  end
+
+  it "parses a valid global id with a query string" do
+    parsed = subject.parse("gid://foo/User/123?x=123&y=456")
+    expect(parsed).to eq ["foo", "User", "123", "x" => "123", "y" => "456"]
+
+    parsed = subject.parse("gid://foo/User/123?")
+    expect(parsed).to eq ["foo", "User", "123"]
+  end
+end
+
+RSpec.shared_examples "extracting the scalar id" do
+  before { subject.app = "foo" }
+
+  it "returns the scalar id" do
+    id = subject.to_sc("gid://foo/User/123")
+    expect(id).to eq "123"
+
+    id = subject.to_sc("gid://foo/User/123?x=1")
+    expect(id).to eq "123"
+  end
+end
+
 RSpec.describe TinyGID do
   it "does not define GID" do
     expect(defined?(GID)).to be_nil
@@ -97,32 +137,6 @@ RSpec.describe TinyGID do
     end
   end
 
-  describe ".parse" do
-    %w[gid gid:// gid://foo/Bar gid//foo gid://foo/Bar/ gid//foo/Bar/123].each do |id|
-      context "given #{id}" do
-        it "raises an ArgumentError" do
-          expect { described_class.parse(id) }.to raise_error(ArgumentError, "'#{id}' is not a valid global id")
-        end
-      end
-    end
-
-    it "parses a valid global id" do
-      parsed = described_class.parse("gid://foo/User/123")
-      expect(parsed).to eq %w[foo User 123]
-
-      parsed = described_class.parse("gid://foo-hoo/SomeUser/123-456")
-      expect(parsed).to eq %w[foo-hoo SomeUser 123-456]
-    end
-
-    it "parses a valid global id with a query string" do
-      parsed = described_class.parse("gid://foo/User/123?x=123&y=456")
-      expect(parsed).to eq ["foo", "User", "123", "x" => "123", "y" => "456"]
-
-      parsed = described_class.parse("gid://foo/User/123?")
-      expect(parsed).to eq ["foo", "User", "123"]
-    end
-  end
-
   describe ".app" do
     before do
       described_class.app = nil
@@ -145,13 +159,25 @@ RSpec.describe TinyGID do
     end
   end
 
-  describe ".to_sc" do
-    it "returns the scalar id" do
-      id = described_class.to_sc("gid://foo/User/123")
-      expect(id).to eq "123"
+  describe ".parse" do
+    subject { described_class }
+    include_examples "parsing a global id"
+  end
 
-      id = described_class.to_sc("gid://foo/User/123?x=1")
-      expect(id).to eq "123"
+  describe ".to_sc" do
+    subject { described_class }
+    include_examples "extracting the scalar id"
+  end
+
+  describe "instances" do
+    subject { described_class.new("foo") }
+
+    describe "#parse" do
+      include_examples "parsing a global id"
+    end
+
+    describe "#to_sc" do
+      include_examples "extracting the scalar id"
     end
   end
 end
