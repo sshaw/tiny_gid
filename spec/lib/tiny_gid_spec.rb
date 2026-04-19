@@ -172,6 +172,14 @@ RSpec.describe TinyGID do
   describe "instances" do
     subject { described_class.new("foo") }
 
+    it "requires an app name" do
+      ["", nil, "  "].each do |app|
+        expect {
+          described_class.new(app)
+        }.to raise_error(ArgumentError, "app required")
+      end
+    end
+
     describe "#parse" do
       include_examples "parsing a global id"
     end

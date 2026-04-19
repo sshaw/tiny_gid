@@ -77,7 +77,7 @@ class TinyGID
   end
 
   def initialize(app)
-    raise ArgumentError "app required" if app.to_s.strip.empty?
+    raise ArgumentError, "app required" if app.to_s.strip.empty?
     @app = app
   end
 
