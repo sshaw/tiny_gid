@@ -83,7 +83,7 @@ class TinyGID
 
   def parse(gid)
     parsed = TinyGID.parse(gid)
-    raise ArgumentError, "gid contains the wrong app: '#{parsed[0]}' must be #@app" unless parsed[0] == @app
+    raise ArgumentError, "gid contains the wrong app: '#{parsed[0]}' must be '#@app'" unless parsed[0] == @app
 
     parsed
   end

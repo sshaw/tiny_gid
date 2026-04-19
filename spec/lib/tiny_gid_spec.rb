@@ -182,6 +182,12 @@ RSpec.describe TinyGID do
 
     describe "#parse" do
       include_examples "parsing a global id"
+
+      it "raises an error when app names do not match" do
+        expect {
+          subject.parse("gid://foo-hoo/Product/123")
+        }.to raise_error(ArgumentError, "gid contains the wrong app: 'foo-hoo' must be 'foo'")
+      end
     end
 
     describe "#to_sc" do
